@@ -1,9 +1,4 @@
-/*
- * main.cpp
- *
- *  Created on: Oct 22, 2022
- *      Author: 
- */
+#include "Bouquet.h"
 #include<iostream>
 using namespace std;
 
@@ -35,7 +30,3 @@ int main() {
 	cout << b2;
 	return 0;
 }
-
-
-
-
