@@ -1,42 +1,160 @@
-/*
- * Polynomial.h
- *
- *  Created on: Oct 21, 2022
- *      Author: 
- */
-
-#ifndef POLYNOMIAL_H_
-#define POLYNOMIAL_H_
+#pragma once
+#ifndef POLYNOMIAL_H
+#define POLYNOMIAL_H
 #include <string>
+#include<iostream>
 using namespace std;
 
-class Polynomial {
-// think about the private data members (coefficient values can be of type int)
+class Polynomial
+{
+	//Data members
+	int size; //size of array
+	int* coefficient; //pointer to dynamic array
 public:
-//include all the necessary checks before performing the operations in the functions
-Polynomial(); // a default constructor
-Polynomial(int); // a parameterized constructor, received the highest degree of polynomial
-Polynomial(const Polynomial &); // a copy constructor
+	//default constructor
+	Polynomial()
+	{
+		size = 10;
+		coefficient = new int[size];
+		for (int i = 0; i < size; i++)
+			coefficient[i] = 0;
+	}
 
-// Binary Operators
-// Assignment Operator
-Polynomial operator=(const Polynomial& rhs); //assigns (copies) the rhs Polynomial to "this" Polynomial
-// Arithmetic Operators
-Polynomial operator+(const Polynomial &); // adds two Polynomials and returns the result
-Polynomial operator-(const Polynomial &); // subtracts two Polynomials and returns the result
-// Compound Assignment Operators
-void operator+=(const Polynomial&); // adds two Polynomials
-void operator-=(const Polynomial&); // subtracts two Polynomials
-// Logical Operator
-bool operator==(const Polynomial &); // compares and returns true if equal
+	//parameterized constructor
+	Polynomial(int s)
+	{
+		this->size = s;
+		coefficient = new int[s + 1];
+		for (int i = 0; i < this->size; i++)
+			coefficient[i] = 0;
+	}
 
-// Conversion Operator
-operator string() const; // returns the value of the Polynomial as a string like “4x^3 + 3x + 2”
-~Polynomial(); // destructor
+	//copy constructor
+	Polynomial(const Polynomial& p)
+	{
+		size = p.size;
+		coefficient = new int[size + 1];
+		for (int i = 0; i < size; i++)
+			coefficient[i] = p.coefficient[i];
+	}
+
+	//assignment operator overloading
+	Polynomial& operator=(const Polynomial& p)
+	{
+		this->size = p.size;
+		this->coefficient = new int[size + 1];
+		for (int i = 0; i < this->size; ++i)
+			this->coefficient[i] = p.coefficient[i];
+		return *this;
+	}
+
+	//equal to operator overloading
+	bool operator==(const Polynomial& p)
+	{
+		for (int i = 0; i < size; i++)
+			if (p.coefficient[i] != this->coefficient[i])
+				return false;
+		return true;
+	}
+
+	// + operator overloading
+	Polynomial operator+(const Polynomial& p)
+	{
+		Polynomial temp;
+		if (this->size > p.size)
+			temp.size = this->size;
+		else
+			temp.size = p.size;
+
+		for (int i = 0; i <= temp.size; i++)
+			temp.coefficient[i] = this->coefficient[i] + p.coefficient[i];
+		return temp;
+	}
+
+	// - operator overloading
+	Polynomial operator-(const Polynomial& p)
+	{
+		Polynomial temp;
+		if (this->size > p.size)
+			temp.size = this->size;
+		else
+			temp.size = p.size;
+
+		for (int i = 0; i <= temp.size; i++)
+			temp.coefficient[i] = this->coefficient[i] - p.coefficient[i];
+		return temp;
+	}
+
+	// += operator overloading
+	void operator+=(const Polynomial& p)
+	{
+		Polynomial temp;
+		if (this->size > p.size)
+			temp.size = this->size;
+		else
+			temp.size = p.size;
+
+		for (int i = 0; i <= this->size; i++)
+			temp.coefficient[i] = this->coefficient[i] + p.coefficient[i];
+
+	}
+
+	// -= operator overloading
+	void operator-=(const Polynomial& p)
+	{
+		Polynomial temp;
+		if (this->size > p.size)
+			temp.size = this->size;
+		else
+			temp.size = p.size;
+
+		for (int i = 0; i <= this->size; i++)
+			temp.coefficient[i] = this->coefficient[i] - p.coefficient[i];
+	}
+
+	operator string() const
+	{
+		string p;
+		string str;
+		for (int i = size; i >= 0; i--) {
+			p = to_string(coefficient[i]) + "x^" + to_string(size);
+			str += p;
+		}
+		return str;
+	}
+
+	//destructor
+	~Polynomial() { delete[] coefficient; }
+
+	// << operator overloading
+	friend ostream& operator<<(ostream& out, const Polynomial& p);
+	// << operator overloading
+	friend istream& operator>>(istream& input, Polynomial& p);
+
 };
 
-ostream& operator<<(ostream& output, const Polynomial&); // outputs the Polynomial
-istream& operator>>(istream& input, Polynomial&); // inputs the Polynomial
+// << operator overloading
+ostream& operator<<(ostream& out, const Polynomial& p)
+{
+	for (int i = p.size; i >= 0; i--)
+	{
+		if (i == p.size || p.coefficient[i] < 0)
+			out << p.coefficient[i] << "x^" << i << " ";
+		else
+			out << "+ " << p.coefficient[i] << "x^" << i << " ";
+	}
+	out << endl;
+	return out;
+}
+// << operator overloading
+istream& operator>>(istream& in, Polynomial& p)
+{
+	for (int i = 0; i <= p.size; i++)
+	{
+		cout << "Enter number for degree: " << i << " : ";
+		in >> p.coefficient[i];
+	}
+	return in;
+}
 
-
-#endif /* POLYNOMIAL_H_ */
+#endif // POLYNOMIAL_H
